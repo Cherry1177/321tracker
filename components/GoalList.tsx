@@ -82,18 +82,19 @@ export default function GoalList({ goals, onComplete }: GoalListProps) {
 
   return (
     <div className="space-y-4">
-      {goals.map((goal) => {
+      {goals.map((goal, index) => {
         const completed = isCompletedToday(goal)
         const lastCompletion = goal.completions[0]
 
         return (
           <div
             key={goal.id}
-            className={`border-2 rounded-lg p-4 transition-all ${
+            className={`stagger-item border-2 rounded-xl p-4 transition-all duration-300 hover-lift ${
               completed
-                ? "border-green-500 bg-green-50"
-                : "border-gray-200 bg-white hover:border-gray-300"
+                ? "border-green-500 bg-gradient-to-br from-green-50 to-emerald-50 shadow-md"
+                : "border-gray-200 bg-white hover:border-teal-300 hover:shadow-md"
             }`}
+            style={{ animationDelay: `${index * 0.1}s` }}
           >
             <div className="flex items-start justify-between">
               <div className="flex-1">
@@ -115,13 +116,13 @@ export default function GoalList({ goals, onComplete }: GoalListProps) {
                 )}
 
                 {completed ? (
-                  <div className="flex items-center gap-2 text-green-600 text-sm font-medium">
-                    <Check className="w-4 h-4" />
-                    Completed today
+                  <div className="flex items-center gap-2 text-green-600 text-sm font-medium animate-fadeIn">
+                    <Check className="w-4 h-4 success-animation" />
+                    <span className="font-semibold">Completed today ✨</span>
                   </div>
                 ) : (
                   <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
-                    <label className="flex items-center justify-center gap-2 bg-teal-500 text-white px-4 py-2.5 rounded-lg hover:bg-teal-600 transition-colors cursor-pointer shadow-md min-h-[44px] text-sm sm:text-base">
+                    <label className="flex items-center justify-center gap-2 bg-gradient-to-r from-teal-500 to-teal-600 text-white px-4 py-2.5 rounded-lg hover:from-teal-600 hover:to-teal-700 transition-all duration-200 cursor-pointer shadow-md hover:shadow-lg hover-lift min-h-[44px] text-sm sm:text-base font-medium">
                       <Camera className="w-4 h-4" />
                       <span className="hidden sm:inline">{uploading === goal.id ? "Uploading..." : "Complete with Photo"}</span>
                       <span className="sm:hidden">{uploading === goal.id ? "Uploading..." : "Photo"}</span>
@@ -140,7 +141,7 @@ export default function GoalList({ goals, onComplete }: GoalListProps) {
                     </label>
                     <button
                       onClick={() => onComplete(goal.id)}
-                      className="flex items-center justify-center gap-2 bg-gray-200 text-gray-700 px-4 py-2.5 rounded-lg hover:bg-gray-300 transition-colors min-h-[44px] text-sm sm:text-base"
+                      className="flex items-center justify-center gap-2 bg-gray-200 text-gray-700 px-4 py-2.5 rounded-lg hover:bg-gray-300 transition-all duration-200 hover-lift min-h-[44px] text-sm sm:text-base font-medium"
                     >
                       <Check className="w-4 h-4" />
                       Complete

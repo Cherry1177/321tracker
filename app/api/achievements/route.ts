@@ -18,8 +18,30 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+    const { searchParams } = new URL(req.url)
+    const targetUserId = searchParams.get("userId") || session.user.id
+
+    // If viewing someone else's profile, check if they are friends
+    if (targetUserId !== session.user.id) {
+      const friendship = await prisma.friendship.findFirst({
+        where: {
+          OR: [
+            { user1Id: session.user.id, user2Id: targetUserId },
+            { user1Id: targetUserId, user2Id: session.user.id }
+          ]
+        }
+      })
+
+      if (!friendship) {
+        return NextResponse.json(
+          { error: "You can only view friends' achievements" },
+          { status: 403 }
+        )
+      }
+    }
+
     const achievements = await prisma.achievement.findMany({
-      where: { userId: session.user.id },
+      where: { userId: targetUserId },
       orderBy: { date: "desc" }
     })
 

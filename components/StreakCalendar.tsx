@@ -61,11 +61,11 @@ export default function StreakCalendar({ streaks, currentStreak }: StreakCalenda
   const selectedStreak = selectedDate ? getStreakForDate(selectedDate) : null
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fadeIn">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-semibold text-gray-900">Streak Calendar</h2>
-        <div className="flex items-center gap-2 text-teal-600">
-          <Flame className="w-5 h-5" />
+        <div className="flex items-center gap-2 text-teal-600 bg-teal-50 px-4 py-2 rounded-full">
+          <Flame className="w-5 h-5 animate-pulse-slow" />
           <span className="font-semibold">{currentStreak} day streak</span>
         </div>
       </div>
@@ -78,7 +78,7 @@ export default function StreakCalendar({ streaks, currentStreak }: StreakCalenda
             tileClassName={tileClassName}
             tileStyle={tileStyle}
             tileContent={tileContent}
-            className="w-full border-0 rounded-lg shadow-sm min-w-[280px]"
+            className="w-full border-0 rounded-xl shadow-lg bg-white/90 backdrop-blur-sm min-w-[280px] hover-lift transition-all duration-200"
           />
         </div>
 

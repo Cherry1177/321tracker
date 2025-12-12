@@ -1,7 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { UserPlus, Check, X, Share2 } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { UserPlus, Check, X, Share2, User } from "lucide-react"
 
 interface Friend {
   id: string
@@ -15,6 +16,7 @@ interface FriendsPanelProps {
 }
 
 export default function FriendsPanel({ onShareStory }: FriendsPanelProps) {
+  const router = useRouter()
   const [friends, setFriends] = useState<Friend[]>([])
   const [sentRequests, setSentRequests] = useState<any[]>([])
   const [receivedRequests, setReceivedRequests] = useState<any[]>([])
@@ -93,7 +95,7 @@ export default function FriendsPanel({ onShareStory }: FriendsPanelProps) {
         <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Friends & Accountability</h2>
         <button
           onClick={onShareStory}
-          className="flex items-center justify-center gap-2 bg-teal-500 text-white px-4 py-2.5 rounded-lg hover:bg-teal-600 transition-colors shadow-md min-h-[44px] text-sm sm:text-base"
+          className="flex items-center justify-center gap-2 bg-gradient-to-r from-teal-500 to-teal-600 text-white px-4 py-2.5 rounded-lg hover:from-teal-600 hover:to-teal-700 transition-all duration-200 shadow-md hover:shadow-lg hover-lift min-h-[44px] text-sm sm:text-base font-medium"
         >
           <Share2 className="w-4 h-4" />
           <span className="hidden sm:inline">Share Streak Story</span>
@@ -102,7 +104,7 @@ export default function FriendsPanel({ onShareStory }: FriendsPanelProps) {
       </div>
 
       {/* Add Friend */}
-      <div className="border rounded-lg p-4">
+      <div className="border rounded-xl p-4 bg-gradient-to-br from-white to-gray-50/50 shadow-sm hover-lift transition-all duration-200">
         <h3 className="font-medium text-gray-900 mb-3">Add Friend</h3>
         <form onSubmit={handleSendRequest} className="flex flex-col sm:flex-row gap-2">
           <input
@@ -111,12 +113,12 @@ export default function FriendsPanel({ onShareStory }: FriendsPanelProps) {
             onChange={(e) => setFriendEmail(e.target.value)}
             placeholder="Enter friend's email"
             required
-            className="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent min-h-[44px] text-base"
+            className="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent min-h-[44px] text-base transition-all duration-200"
           />
           <button
             type="submit"
             disabled={loading}
-            className="flex items-center justify-center gap-2 bg-teal-500 text-white px-4 py-2.5 rounded-lg hover:bg-teal-600 transition-colors disabled:opacity-50 shadow-md min-h-[44px]"
+            className="flex items-center justify-center gap-2 bg-gradient-to-r from-teal-500 to-teal-600 text-white px-4 py-2.5 rounded-lg hover:from-teal-600 hover:to-teal-700 transition-all duration-200 disabled:opacity-50 shadow-md hover:shadow-lg hover-lift min-h-[44px] font-medium"
           >
             <UserPlus className="w-4 h-4" />
             <span className="hidden sm:inline">Send Request</span>
@@ -160,18 +162,30 @@ export default function FriendsPanel({ onShareStory }: FriendsPanelProps) {
           <p className="text-gray-500 text-sm">No friends yet. Add some accountability partners!</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {friends.map((friend) => (
+            {friends.map((friend, index) => (
               <div
                 key={friend.id}
-                className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50"
+                className="stagger-item flex items-center gap-3 p-3 border rounded-xl hover:bg-gradient-to-r hover:from-teal-50 hover:to-cyan-50 cursor-pointer transition-all duration-200 hover-lift shadow-sm hover:shadow-md"
+                onClick={() => router.push(`/profile/${friend.id}`)}
+                style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center text-teal-600 font-semibold">
+                <div className="w-10 h-10 bg-gradient-to-br from-teal-100 to-cyan-100 rounded-full flex items-center justify-center text-teal-600 font-semibold flex-shrink-0 shadow-sm hover:scale-110 transition-transform duration-200">
                   {(friend.name || friend.email)[0].toUpperCase()}
                 </div>
-                <div className="flex-1">
-                  <p className="font-medium">{friend.name || friend.email}</p>
-                  <p className="text-sm text-gray-600">{friend.email}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium truncate">{friend.name || friend.email}</p>
+                  <p className="text-sm text-gray-600 truncate">{friend.email}</p>
                 </div>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    router.push(`/profile/${friend.id}`)
+                  }}
+                  className="p-2 text-teal-600 hover:bg-teal-100 rounded-lg transition-all duration-200 flex-shrink-0 hover:scale-110"
+                  aria-label="View profile"
+                >
+                  <User className="w-5 h-5" />
+                </button>
               </div>
             ))}
           </div>

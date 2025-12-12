@@ -11,7 +11,11 @@ interface Achievement {
   date: string
 }
 
-export default function AchievementGallery() {
+interface AchievementGalleryProps {
+  isOwnProfile?: boolean
+}
+
+export default function AchievementGallery({ isOwnProfile = true }: AchievementGalleryProps) {
   const [achievements, setAchievements] = useState<Achievement[]>([])
   const [showUpload, setShowUpload] = useState(false)
   const [uploading, setUploading] = useState(false)
@@ -93,14 +97,17 @@ export default function AchievementGallery() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-gray-900">Achievement Gallery</h2>
-        <button
-          onClick={() => setShowUpload(true)}
-          className="flex items-center gap-2 bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600 transition-colors shadow-md"
-        >
-          <Upload className="w-4 h-4" />
-          Share Achievement
-        </button>
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Achievement Gallery</h2>
+        {isOwnProfile && (
+          <button
+            onClick={() => setShowUpload(true)}
+            className="flex items-center gap-2 bg-gradient-to-r from-teal-500 to-teal-600 text-white px-4 py-2.5 rounded-lg hover:from-teal-600 hover:to-teal-700 transition-all duration-200 shadow-md hover:shadow-lg hover-lift min-h-[44px] text-sm sm:text-base font-medium"
+          >
+            <Upload className="w-4 h-4" />
+            <span className="hidden sm:inline">Share Achievement</span>
+            <span className="sm:hidden">Share</span>
+          </button>
+        )}
       </div>
 
       {achievements.length === 0 ? (
@@ -110,22 +117,27 @@ export default function AchievementGallery() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {achievements.map((achievement) => (
-            <div key={achievement.id} className="relative group">
-              <div className="aspect-square relative rounded-lg overflow-hidden bg-gray-100">
+          {achievements.map((achievement, index) => (
+            <div 
+              key={achievement.id} 
+              className="relative group stagger-item hover-lift"
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
+              <div className="aspect-square relative rounded-xl overflow-hidden bg-gray-100 shadow-md group-hover:shadow-xl transition-all duration-300">
                 <Image
                   src={achievement.photoUrl}
                   alt={achievement.caption || "Achievement"}
                   fill
-                  className="object-cover"
+                  className="object-cover group-hover:scale-110 transition-transform duration-500"
                 />
                 {achievement.caption && (
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
-                    <p className="text-white text-sm">{achievement.caption}</p>
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/60 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <p className="text-white text-sm font-medium">{achievement.caption}</p>
                   </div>
                 )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
-              <p className="text-xs text-gray-500 mt-2">
+              <p className="text-xs text-gray-500 mt-2 text-center">
                 {new Date(achievement.date).toLocaleDateString()}
               </p>
             </div>
@@ -134,13 +146,13 @@ export default function AchievementGallery() {
       )}
 
       {showUpload && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 sm:p-6">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-4 sm:p-6 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 sm:p-6 animate-fadeIn">
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-4 sm:p-6 max-h-[90vh] overflow-y-auto animate-scaleIn border border-gray-200/50">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold">Share Achievement</h3>
               <button
                 onClick={() => setShowUpload(false)}
-                className="text-gray-400 hover:text-gray-600 min-w-[44px] min-h-[44px] flex items-center justify-center"
+                className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg p-1 transition-all duration-200 min-w-[44px] min-h-[44px] flex items-center justify-center"
               >
                 <X className="w-5 h-5" />
               </button>
