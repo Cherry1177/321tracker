@@ -89,36 +89,38 @@ export default function FriendsPanel({ onShareStory }: FriendsPanelProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-gray-900">Friends & Accountability</h2>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Friends & Accountability</h2>
         <button
           onClick={onShareStory}
-          className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
+          className="flex items-center justify-center gap-2 bg-teal-500 text-white px-4 py-2.5 rounded-lg hover:bg-teal-600 transition-colors shadow-md min-h-[44px] text-sm sm:text-base"
         >
           <Share2 className="w-4 h-4" />
-          Share Streak Story
+          <span className="hidden sm:inline">Share Streak Story</span>
+          <span className="sm:hidden">Share Story</span>
         </button>
       </div>
 
       {/* Add Friend */}
       <div className="border rounded-lg p-4">
         <h3 className="font-medium text-gray-900 mb-3">Add Friend</h3>
-        <form onSubmit={handleSendRequest} className="flex gap-2">
+        <form onSubmit={handleSendRequest} className="flex flex-col sm:flex-row gap-2">
           <input
             type="email"
             value={friendEmail}
             onChange={(e) => setFriendEmail(e.target.value)}
             placeholder="Enter friend's email"
             required
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent min-h-[44px] text-base"
           />
           <button
             type="submit"
             disabled={loading}
-            className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50"
+            className="flex items-center justify-center gap-2 bg-teal-500 text-white px-4 py-2.5 rounded-lg hover:bg-teal-600 transition-colors disabled:opacity-50 shadow-md min-h-[44px]"
           >
             <UserPlus className="w-4 h-4" />
-            Send Request
+            <span className="hidden sm:inline">Send Request</span>
+            <span className="sm:hidden">Send</span>
           </button>
         </form>
       </div>
@@ -163,7 +165,7 @@ export default function FriendsPanel({ onShareStory }: FriendsPanelProps) {
                 key={friend.id}
                 className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50"
               >
-                <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-semibold">
+                <div className="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center text-teal-600 font-semibold">
                   {(friend.name || friend.email)[0].toUpperCase()}
                 </div>
                 <div className="flex-1">

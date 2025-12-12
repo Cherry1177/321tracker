@@ -21,6 +21,27 @@ export async function POST(req: NextRequest) {
       )
     }
 
+    // Validate file type - only allow PNG and JPG
+    const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg']
+    const allowedExtensions = ['.png', '.jpg', '.jpeg']
+    const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'))
+    
+    if (!allowedTypes.includes(file.type) && !allowedExtensions.includes(fileExtension)) {
+      return NextResponse.json(
+        { error: "Only PNG and JPG images are allowed" },
+        { status: 400 }
+      )
+    }
+
+    // Validate file size (max 5MB)
+    const maxSize = 5 * 1024 * 1024 // 5MB
+    if (file.size > maxSize) {
+      return NextResponse.json(
+        { error: "File size must be less than 5MB" },
+        { status: 400 }
+      )
+    }
+
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
 

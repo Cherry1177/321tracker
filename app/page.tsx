@@ -10,7 +10,7 @@ export default async function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-50 flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
         <h1 className="text-4xl font-bold text-gray-900 mb-2">321 Tracker</h1>
         <p className="text-gray-600 mb-8">
@@ -19,13 +19,13 @@ export default async function Home() {
         <div className="space-y-4">
           <Link
             href="/login"
-            className="block w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors"
+            className="block w-full bg-teal-500 text-white py-3 rounded-lg font-semibold hover:bg-teal-600 transition-colors shadow-md"
           >
             Login
           </Link>
           <Link
             href="/register"
-            className="block w-full bg-white text-indigo-600 py-3 rounded-lg font-semibold border-2 border-indigo-600 hover:bg-indigo-50 transition-colors"
+            className="block w-full bg-white text-teal-600 py-3 rounded-lg font-semibold border-2 border-teal-500 hover:bg-teal-50 transition-colors"
           >
             Sign Up
           </Link>

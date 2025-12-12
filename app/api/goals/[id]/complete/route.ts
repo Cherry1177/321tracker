@@ -4,7 +4,10 @@ import { prisma } from "@/lib/prisma"
 import { z } from "zod"
 
 const completeSchema = z.object({
-  photoUrl: z.string().url().optional(),
+  photoUrl: z.string().refine(
+    (val) => !val || val.startsWith('/') || val.startsWith('http'),
+    { message: "Photo URL must be a valid path or URL" }
+  ).optional(),
   notes: z.string().optional(),
 }).passthrough()
 

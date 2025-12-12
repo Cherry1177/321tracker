@@ -30,12 +30,24 @@ export default function StreakCalendar({ streaks, currentStreak }: StreakCalenda
     const streak = getStreakForDate(date)
     if (streak) {
       if (streak.goalsCompleted >= 3) {
-        return "bg-green-500 text-white font-bold"
+        return "bg-emerald-500 text-white font-bold"
       } else if (streak.goalsCompleted > 0) {
-        return "bg-yellow-500 text-white"
+        return "bg-amber-300 text-amber-900"
       }
     }
     return ""
+  }
+
+  const tileStyle = ({ date }: { date: Date }) => {
+    const streak = getStreakForDate(date)
+    if (streak) {
+      if (streak.goalsCompleted >= 3) {
+        return { backgroundColor: '#10b981', color: 'white' } // emerald-500
+      } else if (streak.goalsCompleted > 0) {
+        return { backgroundColor: '#fcd34d', color: '#92400e' } // amber-300, amber-900
+      }
+    }
+    return {}
   }
 
   const tileContent = ({ date }: { date: Date }) => {
@@ -52,20 +64,21 @@ export default function StreakCalendar({ streaks, currentStreak }: StreakCalenda
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-semibold text-gray-900">Streak Calendar</h2>
-        <div className="flex items-center gap-2 text-indigo-600">
+        <div className="flex items-center gap-2 text-teal-600">
           <Flame className="w-5 h-5" />
           <span className="font-semibold">{currentStreak} day streak</span>
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-6">
-        <div className="flex-1">
+      <div className="flex flex-col md:flex-row gap-4 sm:gap-6">
+        <div className="flex-1 overflow-x-auto">
           <Calendar
             onChange={(value) => setSelectedDate(value as Date)}
             value={selectedDate}
             tileClassName={tileClassName}
+            tileStyle={tileStyle}
             tileContent={tileContent}
-            className="w-full border-0 rounded-lg shadow-sm"
+            className="w-full border-0 rounded-lg shadow-sm min-w-[280px]"
           />
         </div>
 
@@ -85,12 +98,12 @@ export default function StreakCalendar({ streaks, currentStreak }: StreakCalenda
                 <span className="font-semibold">{selectedStreak.goalsCompleted}/3</span>
               </div>
               {selectedStreak.goalsCompleted >= 3 ? (
-                <div className="flex items-center gap-2 text-green-600 mt-3">
+                <div className="flex items-center gap-2 text-emerald-600 mt-3">
                   <Flame className="w-4 h-4" />
                   <span className="text-sm font-medium">Strike earned!</span>
                 </div>
               ) : (
-                <div className="text-yellow-600 text-sm mt-3">
+                <div className="text-amber-600 text-sm mt-3">
                   {3 - selectedStreak.goalsCompleted} more needed for strike
                 </div>
               )}
@@ -113,19 +126,19 @@ export default function StreakCalendar({ streaks, currentStreak }: StreakCalenda
         )}
       </div>
 
-      <div className="bg-blue-50 rounded-lg p-4">
-        <h4 className="font-medium text-gray-900 mb-2">Legend</h4>
-        <div className="flex flex-wrap gap-4 text-sm">
+      <div className="bg-teal-50 rounded-lg p-3 sm:p-4">
+        <h4 className="font-medium text-gray-900 mb-2 text-sm sm:text-base">Legend</h4>
+        <div className="flex flex-wrap gap-3 sm:gap-4 text-xs sm:text-sm">
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-green-500 rounded"></div>
+            <div className="w-3 h-3 sm:w-4 sm:h-4 bg-emerald-500 rounded flex-shrink-0"></div>
             <span>3+ goals (Strike earned)</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-yellow-500 rounded"></div>
+            <div className="w-3 h-3 sm:w-4 sm:h-4 bg-amber-300 rounded flex-shrink-0"></div>
             <span>1-2 goals</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-gray-200 rounded"></div>
+            <div className="w-3 h-3 sm:w-4 sm:h-4 bg-gray-200 rounded flex-shrink-0"></div>
             <span>No activity</span>
           </div>
         </div>

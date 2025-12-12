@@ -32,6 +32,17 @@ export default function GoalList({ goals, onComplete }: GoalListProps) {
   const handleFileUpload = async (goalId: string, file: File) => {
     setUploading(goalId)
     try {
+      // Validate file type before uploading
+      const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg']
+      const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'))
+      const allowedExtensions = ['.png', '.jpg', '.jpeg']
+      
+      if (!allowedTypes.includes(file.type) && !allowedExtensions.includes(fileExtension)) {
+        alert("Please select a PNG or JPG image file")
+        setUploading(null)
+        return
+      }
+
       const formData = new FormData()
       formData.append("file", file)
 
@@ -41,12 +52,21 @@ export default function GoalList({ goals, onComplete }: GoalListProps) {
       })
 
       const data = await res.json()
+      
+      if (!res.ok) {
+        alert(data.error || "Failed to upload photo")
+        setUploading(null)
+        return
+      }
+
       if (data.photoUrl) {
         onComplete(goalId, data.photoUrl)
+      } else {
+        alert("Upload failed: No photo URL returned")
       }
     } catch (error) {
       console.error("Error uploading photo:", error)
-      alert("Failed to upload photo")
+      alert("Failed to upload photo. Please try again.")
     } finally {
       setUploading(null)
     }
@@ -100,13 +120,14 @@ export default function GoalList({ goals, onComplete }: GoalListProps) {
                     Completed today
                   </div>
                 ) : (
-                  <div className="flex items-center gap-3">
-                    <label className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors cursor-pointer">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
+                    <label className="flex items-center justify-center gap-2 bg-teal-500 text-white px-4 py-2.5 rounded-lg hover:bg-teal-600 transition-colors cursor-pointer shadow-md min-h-[44px] text-sm sm:text-base">
                       <Camera className="w-4 h-4" />
-                      {uploading === goal.id ? "Uploading..." : "Complete with Photo"}
+                      <span className="hidden sm:inline">{uploading === goal.id ? "Uploading..." : "Complete with Photo"}</span>
+                      <span className="sm:hidden">{uploading === goal.id ? "Uploading..." : "Photo"}</span>
                       <input
                         type="file"
-                        accept="image/*"
+                        accept="image/png,image/jpeg,image/jpg,.png,.jpg,.jpeg"
                         className="hidden"
                         onChange={(e) => {
                           const file = e.target.files?.[0]
@@ -119,7 +140,7 @@ export default function GoalList({ goals, onComplete }: GoalListProps) {
                     </label>
                     <button
                       onClick={() => onComplete(goal.id)}
-                      className="flex items-center gap-2 bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors"
+                      className="flex items-center justify-center gap-2 bg-gray-200 text-gray-700 px-4 py-2.5 rounded-lg hover:bg-gray-300 transition-colors min-h-[44px] text-sm sm:text-base"
                     >
                       <Check className="w-4 h-4" />
                       Complete

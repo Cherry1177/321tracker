@@ -116,15 +116,15 @@ export default function DashboardClient() {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">321 Tracker</h1>
-              <p className="text-sm text-gray-600">Welcome back, {session?.user?.name || session?.user?.email}</p>
+            <div className="min-w-0 flex-1">
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 truncate">321 Tracker</h1>
+              <p className="text-xs sm:text-sm text-gray-600 truncate">Welcome back, {session?.user?.name || session?.user?.email}</p>
             </div>
             <button
               onClick={() => signOut()}
-              className="px-4 py-2 text-sm text-gray-700 hover:text-gray-900"
+              className="ml-2 px-3 sm:px-4 py-2 text-xs sm:text-sm text-gray-700 hover:text-gray-900 whitespace-nowrap"
             >
               Sign Out
             </button>
@@ -133,37 +133,38 @@ export default function DashboardClient() {
       </header>
 
       {/* Stats Bar */}
-      <div className="bg-indigo-600 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="bg-gradient-to-r from-teal-500 to-cyan-500 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+          <div className="grid grid-cols-3 gap-3 sm:gap-6">
             <div className="text-center">
-              <div className="text-3xl font-bold">{currentStreak}</div>
-              <div className="text-indigo-200 text-sm flex items-center justify-center gap-1 mt-1">
-                <Flame className="w-4 h-4" />
-                Day Streak
+              <div className="text-2xl sm:text-3xl font-bold">{currentStreak}</div>
+              <div className="text-teal-100 text-xs sm:text-sm flex items-center justify-center gap-1 mt-1">
+                <Flame className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span className="hidden sm:inline">Day Streak</span>
+                <span className="sm:hidden">Streak</span>
               </div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold">{todayCompletions}/3</div>
-              <div className="text-indigo-200 text-sm mt-1">Goals Today</div>
+              <div className="text-2xl sm:text-3xl font-bold">{todayCompletions}/3</div>
+              <div className="text-teal-100 text-xs sm:text-sm mt-1">Goals Today</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold">{goals.length}</div>
-              <div className="text-indigo-200 text-sm mt-1">Total Goals</div>
+              <div className="text-2xl sm:text-3xl font-bold">{goals.length}</div>
+              <div className="text-teal-100 text-xs sm:text-sm mt-1">Total Goals</div>
             </div>
           </div>
 
           {/* Strike Status */}
-          <div className="mt-6 text-center">
+          <div className="mt-4 sm:mt-6 text-center">
             {strikeEarned ? (
-              <div className="inline-flex items-center gap-2 bg-green-500 px-6 py-3 rounded-full">
-                <Check className="w-5 h-5" />
-                <span className="font-semibold">Strike Earned Today! 🔥</span>
+              <div className="inline-flex items-center gap-2 bg-emerald-500 px-4 sm:px-6 py-2 sm:py-3 rounded-full shadow-lg">
+                <Check className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="text-sm sm:text-base font-semibold">Strike Earned Today! 🔥</span>
               </div>
             ) : (
-              <div className="inline-flex items-center gap-2 bg-yellow-500 px-6 py-3 rounded-full">
-                <span className="font-semibold">
-                  {3 - todayCompletions} more goal{3 - todayCompletions !== 1 ? "s" : ""} needed for strike
+              <div className="inline-flex items-center gap-2 bg-amber-400 px-4 sm:px-6 py-2 sm:py-3 rounded-full shadow-lg text-amber-900">
+                <span className="text-xs sm:text-sm font-semibold">
+                  {3 - todayCompletions} more goal{3 - todayCompletions !== 1 ? "s" : ""} needed
                 </span>
               </div>
             )}
@@ -172,10 +173,10 @@ export default function DashboardClient() {
       </div>
 
       {/* Tabs */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="bg-white rounded-lg shadow-sm mb-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+        <div className="bg-white rounded-lg shadow-sm mb-4 sm:mb-6 overflow-hidden">
           <div className="border-b border-gray-200">
-            <nav className="flex -mb-px">
+            <nav className="flex -mb-px overflow-x-auto scrollbar-hide">
               {[
                 { id: "goals", label: "Goals", icon: Check },
                 { id: "friends", label: "Friends", icon: Users },
@@ -187,14 +188,14 @@ export default function DashboardClient() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id as any)}
-                    className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
+                    className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-medium border-b-2 transition-colors whitespace-nowrap flex-shrink-0 ${
                       activeTab === tab.id
-                        ? "border-indigo-500 text-indigo-600"
+                        ? "border-teal-500 text-teal-600"
                         : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                     }`}
                   >
                     <Icon className="w-4 h-4" />
-                    {tab.label}
+                    <span className="hidden sm:inline">{tab.label}</span>
                   </button>
                 )
               })}
@@ -203,17 +204,17 @@ export default function DashboardClient() {
         </div>
 
         {/* Tab Content */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
           {activeTab === "goals" && (
             <div>
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-gray-900">My Goals</h2>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-900">My Goals</h2>
                 <button
                   onClick={() => setShowAddGoal(true)}
-                  className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
+                  className="flex items-center justify-center gap-2 bg-teal-500 text-white px-4 py-2.5 rounded-lg hover:bg-teal-600 transition-colors shadow-md text-sm sm:text-base min-h-[44px]"
                 >
                   <Plus className="w-4 h-4" />
-                  Add Goal
+                  <span>Add Goal</span>
                 </button>
               </div>
               <GoalList goals={goals} onComplete={handleGoalComplete} />

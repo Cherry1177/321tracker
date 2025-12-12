@@ -4,7 +4,10 @@ import { prisma } from "@/lib/prisma"
 import { z } from "zod"
 
 const achievementSchema = z.object({
-  photoUrl: z.string().url(),
+  photoUrl: z.string().refine(
+    (val) => val.startsWith('/') || val.startsWith('http'),
+    { message: "Photo URL must be a valid path or URL" }
+  ),
   caption: z.string().optional(),
 })
 

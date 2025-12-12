@@ -34,6 +34,17 @@ export default function AchievementGallery() {
   const handleFileUpload = async (file: File) => {
     setUploading(true)
     try {
+      // Validate file type before uploading
+      const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg']
+      const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'))
+      const allowedExtensions = ['.png', '.jpg', '.jpeg']
+      
+      if (!allowedTypes.includes(file.type) && !allowedExtensions.includes(fileExtension)) {
+        alert("Please select a PNG or JPG image file")
+        setUploading(false)
+        return
+      }
+
       const formData = new FormData()
       formData.append("file", file)
 
@@ -43,6 +54,13 @@ export default function AchievementGallery() {
       })
 
       const uploadData = await uploadRes.json()
+      
+      if (!uploadRes.ok) {
+        alert(uploadData.error || "Failed to upload photo")
+        setUploading(false)
+        return
+      }
+
       if (uploadData.photoUrl) {
         const achievementRes = await fetch("/api/achievements", {
           method: "POST",
@@ -53,14 +71,20 @@ export default function AchievementGallery() {
           }),
         })
 
-        if (achievementRes.ok) {
+        if (!achievementRes.ok) {
+          const error = await achievementRes.json()
+          alert(error.error || "Failed to save achievement")
+        } else {
           setShowUpload(false)
           setCaption("")
           fetchAchievements()
         }
+      } else {
+        alert("Upload failed: No photo URL returned")
       }
     } catch (error) {
-      alert("Failed to upload achievement")
+      console.error("Error uploading achievement:", error)
+      alert("Failed to upload achievement. Please try again.")
     } finally {
       setUploading(false)
     }
@@ -72,7 +96,7 @@ export default function AchievementGallery() {
         <h2 className="text-xl font-semibold text-gray-900">Achievement Gallery</h2>
         <button
           onClick={() => setShowUpload(true)}
-          className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
+          className="flex items-center gap-2 bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600 transition-colors shadow-md"
         >
           <Upload className="w-4 h-4" />
           Share Achievement
@@ -110,13 +134,13 @@ export default function AchievementGallery() {
       )}
 
       {showUpload && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 sm:p-6">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-4 sm:p-6 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold">Share Achievement</h3>
               <button
                 onClick={() => setShowUpload(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-gray-400 hover:text-gray-600 min-w-[44px] min-h-[44px] flex items-center justify-center"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -127,18 +151,18 @@ export default function AchievementGallery() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Photo
                 </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0]
-                    if (file) {
-                      handleFileUpload(file)
-                    }
-                  }}
-                  disabled={uploading}
-                  className="w-full"
-                />
+                  <input
+                    type="file"
+                    accept="image/png,image/jpeg,image/jpg,.png,.jpg,.jpeg"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0]
+                      if (file) {
+                        handleFileUpload(file)
+                      }
+                    }}
+                    disabled={uploading}
+                    className="w-full min-h-[44px] text-base"
+                  />
               </div>
 
               <div>
@@ -149,7 +173,7 @@ export default function AchievementGallery() {
                   value={caption}
                   onChange={(e) => setCaption(e.target.value)}
                   rows={3}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   placeholder="What did you achieve?"
                 />
               </div>
