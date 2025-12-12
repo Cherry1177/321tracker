@@ -72,14 +72,27 @@ export default function DashboardClient() {
 
   const handleGoalComplete = async (goalId: string, photoUrl?: string) => {
     try {
-      await fetch(`/api/goals/${goalId}/complete`, {
+      const body: { photoUrl?: string } = {}
+      if (photoUrl) {
+        body.photoUrl = photoUrl
+      }
+      
+      const res = await fetch(`/api/goals/${goalId}/complete`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ photoUrl }),
+        body: JSON.stringify(body),
       })
+      
+      if (!res.ok) {
+        const error = await res.json()
+        alert(error.error || "Failed to complete goal")
+        return
+      }
+      
       fetchData()
     } catch (error) {
       console.error("Error completing goal:", error)
+      alert("Failed to complete goal. Please try again.")
     }
   }
 

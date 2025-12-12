@@ -6,11 +6,11 @@ import { z } from "zod"
 const completeSchema = z.object({
   photoUrl: z.string().url().optional(),
   notes: z.string().optional(),
-})
+}).passthrough()
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> | { id: string } }
 ) {
   try {
     const session = await auth()
@@ -18,8 +18,12 @@ export async function POST(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+    // Handle both Promise and direct params (Next.js 15+ compatibility)
+    const resolvedParams = await Promise.resolve(params)
+    const goalId = resolvedParams.id
+
     const goal = await prisma.goal.findUnique({
-      where: { id: params.id }
+      where: { id: goalId }
     })
 
     if (!goal || goal.userId !== session.user.id) {
@@ -27,7 +31,8 @@ export async function POST(
     }
 
     const body = await req.json()
-    const { photoUrl, notes } = completeSchema.parse(body)
+    const parsed = completeSchema.parse(body)
+    const { photoUrl, notes } = parsed
 
     const today = new Date()
     today.setHours(0, 0, 0, 0)
@@ -35,7 +40,7 @@ export async function POST(
     // Check if already completed today
     const existingCompletion = await prisma.completion.findFirst({
       where: {
-        goalId: params.id,
+        goalId: goalId,
         date: {
           gte: today,
           lt: new Date(today.getTime() + 24 * 60 * 60 * 1000)
@@ -52,9 +57,9 @@ export async function POST(
 
     const completion = await prisma.completion.create({
       data: {
-        goalId: params.id,
-        photoUrl,
-        notes,
+        goalId: goalId,
+        photoUrl: photoUrl || null,
+        notes: notes || null,
         date: new Date(),
       }
     })
